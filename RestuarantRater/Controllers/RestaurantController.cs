@@ -36,7 +36,7 @@ namespace RestuarantRater.Controllers
 
             return View(restaurant);
         }
-        //GET:Restaurant/Update
+        
         //GET:Restaurant/Delete/{id}
         public ActionResult Delete (int? id)
         {
@@ -62,5 +62,38 @@ namespace RestuarantRater.Controllers
             _db.SaveChanges();
             return RedirectToAction("Index");
         }
+        //GET:Restaurant/Edit/{id}
+        //Get an id from the user
+        //Handle if the id is null
+        //find a restuarant by that id
+        //if the retaurant doesnt exits
+        //Return the restaurant and the view
+        public ActionResult Edit (int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+               
+            }
+            Restaurant restaurant = _db.Restaurants.Find(id);
+            if (restaurant == null)
+            {
+                return HttpNotFound();
+            }
+            return View(restaurant);
+        }
+        //Post: Restaurant/Edit/{id}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Restaurant restaurant)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.Entry(restaurant).State = System.Data.Entity.EntityState.Modified;
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(restaurant);
+        }             
     }
 }
